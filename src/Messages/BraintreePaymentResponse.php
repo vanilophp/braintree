@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Vanilo\Braintree\Messages;
 
 use Konekt\Enum\Enum;
+use Vanilo\Braintree\Models\BraintreeStatus;
 use Vanilo\Payment\Contracts\PaymentResponse;
 use Vanilo\Payment\Contracts\PaymentStatus;
 use Vanilo\Payment\Models\PaymentStatusProxy;
-use Vanilo\Braintree\Models\BraintreeStatus;
-
 
 class BraintreePaymentResponse implements PaymentResponse
 {

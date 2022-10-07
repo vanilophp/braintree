@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Vanilo\Braintree\Tests\Gateway;
 
-use Vanilo\Payment\PaymentGateways;
 use Vanilo\Braintree\Tests\TestCase;
+use Vanilo\Payment\PaymentGateways;
 
 class OmitRegistrationTest extends TestCase
 {

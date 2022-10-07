@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Vanilo\Braintree\Tests\Gateway;
 
-use Vanilo\Payment\Contracts\PaymentGateway;
-use Vanilo\Payment\PaymentGateways;
 use Vanilo\Braintree\BraintreePaymentGateway;
 use Vanilo\Braintree\Tests\TestCase;
+use Vanilo\Payment\Contracts\PaymentGateway;
+use Vanilo\Payment\PaymentGateways;
 
 class RegistrationWithCustomIdTest extends TestCase
 {

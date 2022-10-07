@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Vanilo\Braintree\Providers;
 
 use Konekt\Concord\BaseModuleServiceProvider;
-use Vanilo\Payment\PaymentGateways;
 use Vanilo\Braintree\BraintreePaymentGateway;
+use Vanilo\Payment\PaymentGateways;
 
 class ModuleServiceProvider extends BaseModuleServiceProvider
 {

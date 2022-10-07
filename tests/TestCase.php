@@ -6,8 +6,8 @@ namespace Vanilo\Braintree\Tests;
 
 use Konekt\Concord\ConcordServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Vanilo\Payment\Providers\ModuleServiceProvider as PaymentModule;
 use Vanilo\Braintree\Providers\ModuleServiceProvider as BraintreeModule;
+use Vanilo\Payment\Providers\ModuleServiceProvider as PaymentModule;
 
 abstract class TestCase extends Orchestra
 {

@@ -23,11 +23,11 @@ class BraintreeStatus extends Enum
 
     // The values below are just examples, take the actual
     // list of possible values from the Braintree documentation:
-    const CREATED = 'created';
-    const PENDING_OK = 'pending_ok';
-    const INVALID_DATA = 'invalid_data';
-    const FRAUD_CHECK = 'fraud_check';
-    const AUTH_OK = 'auth_ok';
-    const CAPTURED = 'captured';
-    const FRAUD_DETECTED = 'fraud_detected';
+    public const CREATED = 'created';
+    public const PENDING_OK = 'pending_ok';
+    public const INVALID_DATA = 'invalid_data';
+    public const FRAUD_CHECK = 'fraud_check';
+    public const AUTH_OK = 'auth_ok';
+    public const CAPTURED = 'captured';
+    public const FRAUD_DETECTED = 'fraud_detected';
 }
