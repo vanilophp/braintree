@@ -33,6 +33,8 @@ jobs:
         with:
           dependency-versions: "${{ matrix.dependencies }}"
           composer-options: "--prefer-dist --no-cache"
+      - name: List Installed Dependencies
+        run: composer show -D
       - name: Create Database
         run: mkdir -p database && touch database/database.sqlite
       - name: Run Tests
