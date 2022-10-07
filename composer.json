@@ -12,6 +12,7 @@
     ],
     "require": {
         "php": "^8.0",
+        "illuminate/contracts": "^9.2",
         "konekt/concord": "^1.10.2",
         "vanilo/payment": "^3.0",
         "vanilo/contracts": "^3.0"

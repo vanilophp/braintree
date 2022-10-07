@@ -11,11 +11,12 @@ jobs:
     strategy:
       matrix:
         php: ['8.0', '8.1', '8.2']
-        laravel: ['9.2', '9.34']
+        laravel: ['9.x']
+        dependencies: ['highest', 'lowest']
         exclude:
           - php: '8.2'
             laravel: '9.2'
-    name: PHP ${{ matrix.php }} Laravel ${{ matrix.laravel }}
+    name: PHP ${{ matrix.php }} Laravel ${{ matrix.laravel }} (${{ matrix.dependencies }})
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -26,9 +27,12 @@ jobs:
           extensions: mbstring, json, sqlite3
           tools: composer:v2
       - name: Lock Laravel Version
-        run: composer require "laravel/framework:${{ matrix.laravel }}.*" --no-update -v && composer require "laravel/framework:${{ matrix.laravel }}.*" --no-update -v
-      - name: Composer Install
-        run: composer install --prefer-dist --no-progress --no-interaction
+        run: composer require "laravel/framework:${{ matrix.laravel }}" --no-update --dev -v
+      - name: Install dependencies
+        uses: "ramsey/composer-install@v1"
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
+          composer-options: "--prefer-dist --no-cache"
       - name: Create Database
         run: mkdir -p database && touch database/database.sqlite
       - name: Run Tests
