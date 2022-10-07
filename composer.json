@@ -1,0 +1,42 @@
+{
+    "name": "vanilo/braintree",
+    "description": "Braintree Payment Gateway Support for Vanilo (Laravel)",
+    "type": "library",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Attila Fulop"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "konekt/concord": "^1.10.2",
+        "vanilo/payment": "^3.0",
+        "vanilo/contracts": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vanilo\\Braintree\\": "src"
+        }
+    },
+    "require-dev": {
+        "ext-sqlite3": "*",
+        "orchestra/testbench": "^7.0",
+        "phpunit/phpunit" : "^9.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Vanilo\\Braintree\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
