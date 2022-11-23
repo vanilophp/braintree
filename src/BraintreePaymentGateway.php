@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Vanilo\Braintree;
 
 use Illuminate\Http\Request;
+use Vanilo\Braintree\Messages\BraintreeDetailRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentRequest;
+use Vanilo\Braintree\Messages\BraintreePaymentResponse;
 use Vanilo\Braintree\Messages\BraintreeTransactionRequest;
 use Vanilo\Contracts\Address;
 use Vanilo\Payment\Contracts\Payment;
@@ -18,11 +20,12 @@ class BraintreePaymentGateway implements PaymentGateway
     public const DEFAULT_ID = 'braintree';
 
     public function __construct(
-        private bool $isTest,
+        private bool   $isTest,
         private string $merchantId,
         private string $publicKey,
         private string $privateKey,
-    ) {
+    )
+    {
     }
 
     public static function getName(): string
@@ -50,18 +53,30 @@ class BraintreePaymentGateway implements PaymentGateway
         return $request;
     }
 
-    public function processPaymentResponse(Request|\stdClass $request, array $options = []): PaymentResponse
+    public function processPaymentResponse(Request|Payment $payment, array $options = []): PaymentResponse
     {
+        return (new BraintreePaymentResponse(
+            $this->isTest,
+            $this->merchantId,
+            $this->publicKey,
+            $this->privateKey
+        ))->process($payment);
     }
 
     public function createTransaction(Payment $payment, string $nonce): void
     {
-        (new BraintreeTransactionRequest(
+        $response = (new BraintreeTransactionRequest(
             $this->isTest,
             $this->merchantId,
             $this->publicKey,
             $this->privateKey
         ))->create($payment, $nonce);
+
+        if ($response->transaction) {
+            $payment->update([
+                'remote_id' => $response->transaction->id,
+            ]);
+        }
     }
 
     public function isOffline(): bool

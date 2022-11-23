@@ -5,48 +5,53 @@ declare(strict_types=1);
 namespace Vanilo\Braintree\Messages;
 
 use Konekt\Enum\Enum;
-use Vanilo\Braintree\Models\BraintreeStatus;
+use Vanilo\Braintree\Concerns\HasBraintreeInteraction;
+use Vanilo\Braintree\Models\BraintreeTransactionStatus;
+use Vanilo\Payment\Contracts\Payment;
 use Vanilo\Payment\Contracts\PaymentResponse;
 use Vanilo\Payment\Contracts\PaymentStatus;
 use Vanilo\Payment\Models\PaymentStatusProxy;
 
 class BraintreePaymentResponse implements PaymentResponse
 {
+    use HasBraintreeInteraction;
+
     private string $paymentId;
 
     private ?float $amountPaid;
 
-    private BraintreeStatus $nativeStatus;
+    private BraintreeTransactionStatus $nativeStatus;
 
     private ?PaymentStatus $status = null;
 
     private string $message;
 
+    private bool $wasSuccessful = false;
+
     private ?string $transactionId;
 
-    public function __construct(
-        string $paymentId,
-        BraintreeStatus $nativeStatus,
-        string $message,
-        ?float $amountPaid = null,
-        ?string $transactionId = null
-    ) {
-        // Arguments are just an example here, feel free, to modify
-        $this->paymentId = $paymentId;
-        $this->nativeStatus = $nativeStatus;
-        $this->amountPaid = $amountPaid;
-        $this->message = $message;
-        $this->transactionId = $transactionId;
+    public function process(Payment $payment): self
+    {
+        $transaction = $this->gateway->transaction()->find($payment->remote_id);
+
+        $this->nativeStatus = BraintreeTransactionStatus::create($transaction->status);
+        $this->paymentId = $payment->hash;
+        $this->transactionId = $transaction->id;
+        $this->message = $transaction->processorResponseText;
+        $this->amountPaid = (float)$transaction->amount;
+
+        $this->resolveStatus();
+
+        return $this;
     }
 
     public function wasSuccessful(): bool
     {
-        // implement it based on the gateway logic
+        return $this->wasSuccessful;
     }
 
     public function getMessage(): string
     {
-        // Just an example, feel free to implement a different logic
         return $this->message ?? $this->nativeStatus->label();
     }
 
@@ -57,8 +62,6 @@ class BraintreePaymentResponse implements PaymentResponse
 
     public function getAmountPaid(): ?float
     {
-        // Make sure to return a negative amount if the transaction
-        // the response represents was a refund, partial refund cancellation or similar etc
         return $this->amountPaid;
     }
 
@@ -69,45 +72,47 @@ class BraintreePaymentResponse implements PaymentResponse
 
     public function getStatus(): PaymentStatus
     {
-        if (null === $this->status) {
-            // Obtain the mapped status from the transaction
-            // it usually takes the native status, message
-            // or other data from the gateway callback
-            // and applies mapping to Vanilo Status
-
-            // Use the `PaymentStatusProxy` when creating values
-            // in order to keep the status enum customizable
-
-            // >>> **Example** for mapping status from the native status
-            switch ($this->getNativeStatus()->value()) {
-                case BraintreeStatus::CREATED:
-                case BraintreeStatus::PENDING_OK:
-                    $this->status = PaymentStatusProxy::PENDING();
-                    break;
-                case BraintreeStatus::AUTH_OK:
-                    $this->status = PaymentStatusProxy::AUTHORIZED();
-                    break;
-                case BraintreeStatus::INVALID_DATA:
-                case BraintreeStatus::FRAUD_DETECTED:
-                    $this->status = PaymentStatusProxy::DECLINED();
-                    break;
-                case BraintreeStatus::CAPTURED:
-                    $this->status = PaymentStatusProxy::PAID();
-                    break;
-                case BraintreeStatus::FRAUD_CHECK:
-                    $this->status = PaymentStatusProxy::ON_HOLD();
-                    break;
-                default:
-                    $this->status = PaymentStatusProxy::DECLINED();
-            }
-            // End of Example <<<
-        }
-
         return $this->status;
     }
 
     public function getNativeStatus(): Enum
     {
         return $this->nativeStatus;
+    }
+
+    private function resolveStatus()
+    {
+        switch ($this->getNativeStatus()->value()) {
+            case BraintreeTransactionStatus::AUTHORIZING:
+            case BraintreeTransactionStatus::SETTLING:
+            case BraintreeTransactionStatus::SETTLEMENT_PENDING:
+                $this->status = PaymentStatusProxy::PENDING();
+                $this->wasSuccessful = true;
+                break;
+            case BraintreeTransactionStatus::AUTHORIZED:
+            case BraintreeTransactionStatus::SUBMITTED_FOR_SETTLEMENT:
+                $this->status = PaymentStatusProxy::AUTHORIZED();
+                $this->wasSuccessful = true;
+                break;
+            case BraintreeTransactionStatus::AUTHORIZATION_EXPIRED:
+            case BraintreeTransactionStatus::SETTLEMENT_DECLINED:
+            case BraintreeTransactionStatus::FAILED:
+            case BraintreeTransactionStatus::GATEWAY_REJECTED:
+            case BraintreeTransactionStatus::PROCESSOR_DECLINED:
+                $this->status = PaymentStatusProxy::DECLINED();
+                $this->wasSuccessful = false;
+                break;
+            case BraintreeTransactionStatus::SETTLED:
+                $this->status = PaymentStatusProxy::PAID();
+                $this->wasSuccessful = true;
+                break;
+            case BraintreeTransactionStatus::VOIDED:
+                $this->status = PaymentStatusProxy::DECLINED();
+                $this->wasSuccessful = true;
+                break;
+            default:
+                $this->status = PaymentStatusProxy::DECLINED();
+                $this->wasSuccessful = false;
+        }
     }
 }
