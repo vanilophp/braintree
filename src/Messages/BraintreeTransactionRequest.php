@@ -19,7 +19,7 @@ class BraintreeTransactionRequest
 
         $request = [
             'orderId' => $payment->getPayable()->getPayableId(),
-            'amount' =>  $payment->getAmount(),
+            'amount' => $payment->getAmount(),
             'paymentMethodNonce' => $nonce,
             'options' => [
                 'submitForSettlement' => true,
