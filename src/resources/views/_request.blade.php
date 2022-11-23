@@ -1,14 +1,29 @@
-<p>This is a sample payment requests form. Modify it according to the Payment Gateway you're implementing</p>
-
-<form method="post" action="{{ $url }}" name="braintree" target="_self">
-    @if($autoRedirect)
-        <p>{{ __('You will be redirected to the secure payment page') }}</p>
-        <p>
-            <img src="{{ $url }}" alt="" title=""
-                 onload="javascript:document.braintree.submit()">
-        </p>
-    @endif
-        <button type="submit">
-            {{ __('Proceed to Payment') }}
-        </button>
+<form id="payment-form" action="{{ $url }}" method="post">
+    <div id="dropin-container"></div>
+    <input type="submit" />
+    <input type="hidden" id="nonce" name="nonce"/>
 </form>
+
+<div id="dropin-container"></div>
+<script src="https://js.braintreegateway.com/web/dropin/1.33.7/js/dropin.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.88.4/js/data-collector.min.js"></script>
+
+<script type="text/javascript">
+      const form = document.getElementById('payment-form');
+
+      braintree.dropin.create({
+          authorization: @json($clientToken),
+          container: '#dropin-container'
+      }).then((dropinInstance) => {
+          form.addEventListener('submit', (event) => {
+              event.preventDefault();
+
+              dropinInstance.requestPaymentMethod().then((payload) => {
+                  document.getElementById('nonce').value = payload.nonce;
+                  form.submit();
+              }).catch((error) => { throw error; });
+          });
+      }).catch((error) => {
+          // handle errors
+      });
+</script>

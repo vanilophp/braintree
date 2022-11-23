@@ -24,7 +24,10 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
         if ($this->config('bind', true)) {
             $this->app->bind(BraintreePaymentGateway::class, function ($app) {
                 return new BraintreePaymentGateway(
-                    $this->config('xxx') // @todo replace with real
+                    $this->config('is_test'),
+                    $this->config('merchant_id'),
+                    $this->config('public_key'),
+                    $this->config('private_key'),
                 );
             });
         }

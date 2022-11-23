@@ -5,25 +5,24 @@ declare(strict_types=1);
 namespace Vanilo\Braintree\Messages;
 
 use Illuminate\Support\Facades\View;
+use Vanilo\Braintree\Concerns\HasBraintreeInteraction;
 use Vanilo\Payment\Contracts\PaymentRequest;
 
 class BraintreePaymentRequest implements PaymentRequest
 {
+    use HasBraintreeInteraction;
+
     private string $view = 'braintree::_request';
 
-    private string $approveUrl;
-
-    public function __construct()
-    {
-        // accept arguments, initialize
-    }
+    private string $submitUrl;
 
     public function getHtmlSnippet(array $options = []): ?string
     {
         return View::make(
             $this->view,
             [
-                // Inject needed variables here
+                'clientToken' => $this->gateway->clientToken()->generate(),
+                'url' => $this->submitUrl,
             ]
         )->render();
     }
@@ -40,6 +39,13 @@ class BraintreePaymentRequest implements PaymentRequest
     public function setView(string $view): self
     {
         $this->view = $view;
+
+        return $this;
+    }
+
+    public function setSubmitUrl(string $url): self
+    {
+        $this->submitUrl = $url;
 
         return $this;
     }
