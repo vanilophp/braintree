@@ -22,12 +22,11 @@ class BraintreePaymentGateway implements PaymentGateway
     public const DEFAULT_ID = 'braintree';
 
     public function __construct(
-        private bool   $isTest,
+        private bool $isTest,
         private string $merchantId,
         private string $publicKey,
         private string $privateKey,
-    )
-    {
+    ) {
     }
 
     public static function getName(): string
