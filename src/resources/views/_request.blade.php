@@ -1,7 +1,7 @@
 <form id="payment-form" action="{{ $url }}" method="post">
     <div id="dropin-container"></div>
-    <input type="submit" />
     <input type="hidden" id="nonce" name="nonce"/>
+    <input type="submit" value="Pay"/>
 </form>
 
 <div id="dropin-container"></div>

@@ -24,6 +24,9 @@ class BraintreeTransactionRequest
             'options' => [
                 'submitForSettlement' => true,
             ],
+            'customFields' => [
+                'payment_id' => $payment->getPaymentId()
+            ]
         ];
 
         if ($billPayer) {

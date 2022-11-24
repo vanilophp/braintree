@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Vanilo\Braintree\Messages;
 
+use Braintree\Transaction;
+use Illuminate\Support\Arr;
 use Konekt\Enum\Enum;
 use Vanilo\Braintree\Concerns\HasBraintreeInteraction;
 use Vanilo\Braintree\Models\BraintreeTransactionStatus;
-use Vanilo\Payment\Contracts\Payment;
 use Vanilo\Payment\Contracts\PaymentResponse;
 use Vanilo\Payment\Contracts\PaymentStatus;
 use Vanilo\Payment\Models\PaymentStatusProxy;
@@ -30,15 +31,13 @@ class BraintreePaymentResponse implements PaymentResponse
 
     private ?string $transactionId;
 
-    public function process(Payment $payment): self
+    public function process(Transaction $transaction): self
     {
-        $transaction = $this->gateway->transaction()->find($payment->remote_id);
-
         $this->nativeStatus = BraintreeTransactionStatus::create($transaction->status);
-        $this->paymentId = $payment->hash;
+        $this->paymentId = Arr::get($transaction->customFields, 'payment_id');
         $this->transactionId = $transaction->id;
         $this->message = $transaction->processorResponseText;
-        $this->amountPaid = (float) $transaction->amount;
+        $this->amountPaid = (float)$transaction->amount;
 
         $this->resolveStatus();
 

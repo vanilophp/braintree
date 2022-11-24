@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Vanilo\Braintree;
 
+use Braintree\Result\Error;
+use Braintree\Transaction;
 use Illuminate\Http\Request;
+use Vanilo\Braintree\Exceptions\CreatingTransactionFailed;
 use Vanilo\Braintree\Messages\BraintreePaymentRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentResponse;
 use Vanilo\Braintree\Messages\BraintreeTransactionRequest;
@@ -19,11 +22,12 @@ class BraintreePaymentGateway implements PaymentGateway
     public const DEFAULT_ID = 'braintree';
 
     public function __construct(
-        private bool $isTest,
+        private bool   $isTest,
         private string $merchantId,
         private string $publicKey,
         private string $privateKey,
-    ) {
+    )
+    {
     }
 
     public static function getName(): string
@@ -51,30 +55,34 @@ class BraintreePaymentGateway implements PaymentGateway
         return $request;
     }
 
-    public function processPaymentResponse(Request|Payment $payment, array $options = []): PaymentResponse
+    public function processPaymentResponse(Request|Transaction $request, array $options = []): PaymentResponse
     {
         return (new BraintreePaymentResponse(
             $this->isTest,
             $this->merchantId,
             $this->publicKey,
             $this->privateKey
-        ))->process($payment);
+        ))->process($request);
     }
 
-    public function createTransaction(Payment $payment, string $nonce): void
+    public function createTransaction(Payment $payment, string $nonce): Transaction
     {
-        $response = (new BraintreeTransactionRequest(
+        $transactionResponse = (new BraintreeTransactionRequest(
             $this->isTest,
             $this->merchantId,
             $this->publicKey,
             $this->privateKey
         ))->create($payment, $nonce);
 
-        if ($response->transaction) {
-            $payment->update([
-                'remote_id' => $response->transaction->id,
-            ]);
+        if ($transactionResponse instanceof Error) {
+            throw new CreatingTransactionFailed($transactionResponse->message);
         }
+
+        $payment->update([
+            'remote_id' => $transactionResponse->transaction->id,
+        ]);
+
+        return $transactionResponse->transaction;
     }
 
     public function isOffline(): bool
