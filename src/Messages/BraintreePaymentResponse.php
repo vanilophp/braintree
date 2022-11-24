@@ -37,7 +37,7 @@ class BraintreePaymentResponse implements PaymentResponse
         $this->paymentId = Arr::get($transaction->customFields, 'payment_id');
         $this->transactionId = $transaction->id;
         $this->message = $transaction->processorResponseText;
-        $this->amountPaid = (float)$transaction->amount;
+        $this->amountPaid = (float) $transaction->amount;
 
         $this->resolveStatus();
 
