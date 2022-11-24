@@ -5,7 +5,10 @@
 The following `.env` parameters can be set in order to work with this package.
 
 ```dotenv
-BRAINTREE_Braintree=
+BRAINTREE_IS_TEST=
+BRAINTREE_MERCHANT_ID=
+BRAINTREE_PUBLIC_KEY=
+BRAINTREE_PRIVATE_KEY=
 ```
 
 ## Registration with Payments Module

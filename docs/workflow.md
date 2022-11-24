@@ -8,11 +8,11 @@ consists of the following steps:
 2. Obtain the **payment method** from the checkout<sup>*</sup>
 3. Get the appropriate **gateway instance** associated with the payment
    method
-4. Generate a **payment request** using the gateway
+4. Generate a **payment request** using the gateway which bascially creates a `clientToken` via Braintee API
 5. Inject the **HTML snippet** on the checkout/thankyou page
-6. The HTML snippet ...
-7. The return url (?)
-8. ...
+6. The HTML snippet will render out the [Braintree Drop In](https://developer.paypal.com/braintree/docs/start/drop-in) containing the `clientToken`
+7. Fill the drop in and submit
+8. The gateway creates the transaction in Braintree and return a `PaymentResponse`
 
 ## Obtain Gateway Instance
 
@@ -26,10 +26,9 @@ $gateway = \Vanilo\Payment\PaymentGateways::make('braintree');
 
 The gateway provides you two essential methods:
 
-- `createPaymentRequest` - Assembles the payment initiation request from
-  an order (payable) that can be injected on your checkout page.
-- `processPaymentResponse` - Processes the HTTP response returning from
-  Braintree after a payment attempt.
+- `createPaymentRequest` - Gets the `clientToken` from Braintree and provides the HTML snippet which can be injected to render the Drop-In
+- `createTransaction` - Creates the transaction from an order (payable)
+- `processPaymentResponse` - Processes the `Transaction` object returned by `createTransaction` function
 
 ## Starting Online Payments
 
@@ -49,8 +48,8 @@ class OrderController
         $paymentMethod = PaymentMethod::find($request->get('paymentMethod'));
         $payment = PaymentFactory::createFromPayable($order, $paymentMethod);
         $gateway = PaymentGateways::make('braintree');
-        $paymentRequest = $gateway->createPaymentRequest($payment);
-        
+        $paymentRequest = $gateway->createPaymentRequest($payment, options: ['submitUrl' => route('payment.braintree.submit', $payment->hash)]);
+ 
         return view('order.confirmation', [
             'order' => $order,
             'paymentRequest' => $paymentRequest
@@ -65,14 +64,7 @@ class OrderController
 {!! $paymentRequest->getHtmlSnippet(); !!}
 ```
 
-The generated HTML snippet will contain a prepared, HTML Form ...
-
-You can pass an array to the `getHtmlSnippet()` method that recognizes
-the following keys:
-
-```blade
-{!! $paymentRequest->getHtmlSnippet(); !!}
-```
+The generated HTML snippet will contain a prepared, Braintree Drop-In.
 
 ### Payment Request Options
 
@@ -97,19 +89,17 @@ public function createPaymentRequest(
 
 You can pass the following values in the `$options` array:
 
-| Array Key | Example                                 | Description                                                                                                                                                            |
-|:----------|:----------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `view`    | `vanilo.braintree._form` | By default it's `braintree::_request` You can use a custom blade view to render the HTML snippet instead of the default one this library provides. |
-| `xxx`     | xxx                                     |                                                                                                                                                                        |
-| `yyy`     | yyy                                     |                                                                                                                                                                        |
+| Array Key | Example                                             | Description                                                                                                                                        |
+|:----------|:----------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `view`    | `vanilo.braintree._form`                            | By default it's `braintree::_request` You can use a custom blade view to render the HTML snippet instead of the default one this library provides. |
+| `submitUrl`     | `route('payment.braintree.submit', $payment->hash)` | You must set this url which the action where the Drop-In will be submitted.                                                                        |
 
 **Example**:
 
 ```php
 $options = [
     'view' => 'vanilo.braintree._form',
-    'xxx'  => 'xxx',
-    'yyy'  => 'yyy',
+    'submitUrl'  => route('payment.braintree.submit', $payment->hash),
 ];
 $gateway->createPaymentRequest($payment, null, $options);
 ```
@@ -140,15 +130,8 @@ to render the HTML snippet for Braintree payment requests.
 
 ## Confirm And Return URLs
 
-...
-
-### The Return URL
-
-...
-
-### The Cancel URL
-
-...
+Since Braintree doesn't have webhook for the `Transaction`s basically the entire flow is a sync call of endpoints.
+Therefore there is not return/cancel urls involved.
 
 ---
 

@@ -22,7 +22,7 @@ class CheckoutController
         $paymentMethod = PaymentMethod::find($request->get('paymentMethod'));
         $payment = PaymentFactory::createFromPayable($order, $paymentMethod);
         $gateway = PaymentGateways::make('braintree');
-        $paymentRequest = $gateway->createPaymentRequest($payment);
+        $paymentRequest = $gateway->createPaymentRequest($payment, $order->getShippingAddress(), options: ['submitUrl' => route('payment.braintree.submit', $payment->hash)]);
         
         return view('checkout.thank-you', [
             'order' => $order,
@@ -57,73 +57,56 @@ form:
 ```
 
 ### BraintreeReturnController
+This is the controller and action where the `submitUrl` points to from the `options` array.
+ ```php
+['submitUrl' => route('payment.braintree.submit', $payment->hash)]
+```
+
 
 ```php
 namespace App\Http\Controllers;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Vanilo\Payment\Models\Payment;
 use Vanilo\Payment\PaymentGateways;
 use Vanilo\Payment\Processing\PaymentResponseHandler;
 
-
 class BraintreeReturnController extends Controller
 {
-    public function return(Request $request)
+    public function submit(Request $request, string $paymentId)
     {
-        Log::debug('Braintree confirmation', $request->toArray());
-
-        $payment = $this->processPaymentResponse($request);
-
-        return view('payment.return', [
-            'payment'  => $payment,
-            'order'    => $payment->getPayable()
-        ]);
-    }
-    
-    public function webhook(Request $request)
-    {
-        Log::debug('Braintree webhook', [
-            'req' => $request->toArray(),
-            'method' => $request->method(),
-        ]);
-
-        $this->processPaymentResponse($request);
-
-        return new JsonResponse(['message' => 'Received OK']);
-    }
-
-    private function processPaymentResponse(Request $request): Payment
-    {
-        $response = PaymentGateways::make('braintree')->processPaymentResponse($request);
-        $payment  = Payment::findByPaymentId($response->getPaymentId());
+        $gateway = PaymentGateways::make('braintree');
+        $payment = Payment::findByPaymentId($paymentId);
 
         if (!$payment) {
-            throw new ModelNotFoundException('Could not locate payment with id ' . $response->getPaymentId());
+            abort(404);
         }
+
+        $response = $gateway->processPaymentResponse(
+            $gateway->createTransaction($payment, $request->input('nonce'))
+        );
 
         $handler = new PaymentResponseHandler($payment, $response);
         $handler->writeResponseToHistory();
         $handler->updatePayment();
         $handler->fireEvents();
 
-        return $payment;
+        return view('payment.return', [
+            'payment' => $payment,
+            'order' => $payment->getPayable(),
+        ]);
     }
 }
 ```
 
 ### Routes
 
-The routes for Stro[e should look like:
+The routes for Store should look like:
 
 ```php
 //web.php
 Route::group(['prefix' => 'payment/braintree', 'as' => 'payment.braintree.'], function() {
-    Route::get('return', 'BraintreeReturnController@return')->name('return');
-    Route::get('webhook', 'braintreeReturnController@webhook')->name('webhook');
+    Route::post('{paymentId}/submit', 'BraintreeController@submit')->name('submit');
 });
 ```
 
