@@ -73,7 +73,7 @@ class BraintreePaymentGateway implements PaymentGateway
             $this->privateKey
         ))->create($payment, $nonce);
 
-        if ($transactionResponse instanceof Error) {
+        if ($transactionResponse instanceof Error && !$transactionResponse->transaction) {
             throw new CreatingTransactionFailed($transactionResponse->message);
         }
 
