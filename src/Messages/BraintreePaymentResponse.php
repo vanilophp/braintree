@@ -114,4 +114,16 @@ class BraintreePaymentResponse implements PaymentResponse
                 $this->wasSuccessful = false;
         }
     }
+
+    public function toArray()
+    {
+        return [
+            'native_status' => $this->getNativeStatus()->value(),
+            'status' => $this->getStatus()->value(),
+            'wasSuccessfull' => $this->wasSuccessful(),
+            'amount_paid' => $this->getAmountPaid(),
+            'payment_id' => $this->getPaymentId(),
+            'braintree_id' => $this->getTransactionId(),
+        ];
+    }
 }
