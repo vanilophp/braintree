@@ -8,6 +8,7 @@ use Braintree\Result\Error;
 use Braintree\Transaction;
 use Illuminate\Http\Request;
 use Vanilo\Braintree\Exceptions\CreatingTransactionFailed;
+use Vanilo\Braintree\Messages\BraintreeClientCodeRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentResponse;
 use Vanilo\Braintree\Messages\BraintreeTransactionRequest;
@@ -32,6 +33,16 @@ class BraintreePaymentGateway implements PaymentGateway
     public static function getName(): string
     {
         return 'Braintree';
+    }
+
+    public function getClientCode(): string
+    {
+        return (new BraintreeClientCodeRequest(
+            $this->isTest,
+            $this->merchantId,
+            $this->publicKey,
+            $this->privateKey
+        ))->get();
     }
 
     public function createPaymentRequest(Payment $payment, Address $shippingAddress = null, array $options = []): PaymentRequest
