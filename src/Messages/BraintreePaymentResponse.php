@@ -79,6 +79,19 @@ class BraintreePaymentResponse implements PaymentResponse
         return $this->nativeStatus;
     }
 
+    public function toArray()
+    {
+        return [
+            'native_status' => $this->getNativeStatus()->value(),
+            'status' => $this->getStatus()->value(),
+            'wasSuccessfull' => $this->wasSuccessful(),
+            'amount_paid' => $this->getAmountPaid(),
+            'payment_id' => $this->getPaymentId(),
+            'braintree_id' => $this->getTransactionId(),
+            'message' => $this->getMessage(),
+        ];
+    }
+
     private function resolveStatus()
     {
         switch ($this->getNativeStatus()->value()) {
@@ -113,18 +126,5 @@ class BraintreePaymentResponse implements PaymentResponse
                 $this->status = PaymentStatusProxy::DECLINED();
                 $this->wasSuccessful = false;
         }
-    }
-
-    public function toArray()
-    {
-        return [
-            'native_status' => $this->getNativeStatus()->value(),
-            'status' => $this->getStatus()->value(),
-            'wasSuccessfull' => $this->wasSuccessful(),
-            'amount_paid' => $this->getAmountPaid(),
-            'payment_id' => $this->getPaymentId(),
-            'braintree_id' => $this->getTransactionId(),
-            'message' => $this->getMessage(),
-        ];
     }
 }
