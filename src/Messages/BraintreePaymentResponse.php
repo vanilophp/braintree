@@ -124,6 +124,7 @@ class BraintreePaymentResponse implements PaymentResponse
             'amount_paid' => $this->getAmountPaid(),
             'payment_id' => $this->getPaymentId(),
             'braintree_id' => $this->getTransactionId(),
+            'message' => $this->getMessage(),
         ];
     }
 }
