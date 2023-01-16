@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Vanilo\Braintree\Messages;
 
 use Braintree\Customer;
-use Braintree\Exception\NotFound;
 use Braintree\Result\Successful;
-use Illuminate\Support\Arr;
 use Vanilo\Braintree\Concerns\HasBraintreeInteraction;
 
 class BraintreeCreateCustomerRequest

@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Vanilo\Braintree\Messages;
 
-use App\Models\Customer;
 use Braintree\Result\Error;
 use Braintree\Result\Successful;
 use Illuminate\Support\Arr;
-use Mockery\Exception;
 use Vanilo\Braintree\Concerns\HasBraintreeInteraction;
 use Vanilo\Payment\Contracts\Payment;
 
