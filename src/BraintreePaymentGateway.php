@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Vanilo\Braintree;
 
+use Braintree\Customer;
 use Braintree\Result\Error;
 use Braintree\Transaction;
 use Illuminate\Http\Request;
 use Vanilo\Braintree\Exceptions\CreatingTransactionFailed;
-use Vanilo\Braintree\Messages\BraintreeClientCodeRequest;
+use Vanilo\Braintree\Messages\BraintreeClientTokenRequest;
+use Vanilo\Braintree\Messages\BraintreeCreateCustomerRequest;
+use Vanilo\Braintree\Messages\BraintreeGetCustomerRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentResponse;
 use Vanilo\Braintree\Messages\BraintreeTransactionRequest;
@@ -35,9 +38,9 @@ class BraintreePaymentGateway implements PaymentGateway
         return 'Braintree';
     }
 
-    public function getClientCode(): string
+    public function getClientToken(): string
     {
-        return (new BraintreeClientCodeRequest(
+        return (new BraintreeClientTokenRequest(
             $this->isTest,
             $this->merchantId,
             $this->publicKey,
@@ -75,14 +78,14 @@ class BraintreePaymentGateway implements PaymentGateway
         ))->process($request);
     }
 
-    public function createTransaction(Payment $payment, string $nonce): Transaction
+    public function createTransaction(Payment $payment, ?string $paymentMethodToken, ?string $paymentMethodNonce, ?string $customerId, bool $saveCard = false): Transaction
     {
         $transactionResponse = (new BraintreeTransactionRequest(
             $this->isTest,
             $this->merchantId,
             $this->publicKey,
             $this->privateKey
-        ))->create($payment, $nonce);
+        ))->create($payment, $paymentMethodToken, $paymentMethodNonce, $customerId, $saveCard);
 
         if ($transactionResponse instanceof Error && !$transactionResponse->transaction) {
             throw new CreatingTransactionFailed($transactionResponse->message);
@@ -93,6 +96,26 @@ class BraintreePaymentGateway implements PaymentGateway
         ]);
 
         return $transactionResponse->transaction;
+    }
+
+    public function createCustomer(string $firstName, string $lastName, string $email, ?string $phone, ?string $companyName): ?Customer
+    {
+        return (new BraintreeCreateCustomerRequest(
+            $this->isTest,
+            $this->merchantId,
+            $this->publicKey,
+            $this->privateKey
+        ))->create($firstName, $lastName, $email, $phone, $companyName);
+    }
+
+    public function getCustomer(string $customerId): ?Customer
+    {
+        return (new BraintreeGetCustomerRequest(
+            $this->isTest,
+            $this->merchantId,
+            $this->publicKey,
+            $this->privateKey
+        ))->get($customerId);
     }
 
     public function isOffline(): bool

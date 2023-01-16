@@ -6,7 +6,7 @@ namespace Vanilo\Braintree\Messages;
 
 use Vanilo\Braintree\Concerns\HasBraintreeInteraction;
 
-class BraintreeClientCodeRequest
+class BraintreeClientTokenRequest
 {
     use HasBraintreeInteraction;
 
