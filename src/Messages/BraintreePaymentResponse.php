@@ -96,13 +96,13 @@ class BraintreePaymentResponse implements PaymentResponse
     {
         switch ($this->getNativeStatus()->value()) {
             case BraintreeTransactionStatus::AUTHORIZING:
-            case BraintreeTransactionStatus::SETTLING:
-            case BraintreeTransactionStatus::SETTLEMENT_PENDING:
                 $this->status = PaymentStatusProxy::PENDING();
                 $this->wasSuccessful = true;
                 break;
             case BraintreeTransactionStatus::AUTHORIZED:
             case BraintreeTransactionStatus::SUBMITTED_FOR_SETTLEMENT:
+            case BraintreeTransactionStatus::SETTLING:
+            case BraintreeTransactionStatus::SETTLEMENT_PENDING:
                 $this->status = PaymentStatusProxy::AUTHORIZED();
                 $this->wasSuccessful = true;
                 break;
