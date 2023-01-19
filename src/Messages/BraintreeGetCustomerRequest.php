@@ -6,7 +6,6 @@ namespace Vanilo\Braintree\Messages;
 
 use Braintree\Customer;
 use Braintree\Exception\NotFound;
-use Illuminate\Support\Arr;
 use Vanilo\Braintree\Concerns\HasBraintreeInteraction;
 
 class BraintreeGetCustomerRequest
