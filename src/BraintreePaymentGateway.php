@@ -8,7 +8,7 @@ use Braintree\Customer;
 use Braintree\Result\Error;
 use Braintree\Transaction;
 use Illuminate\Http\Request;
-use Vanilo\Braintree\Exceptions\CreatingTransactionFailed;
+use Vanilo\Braintree\Exceptions\TransactionCreationException;
 use Vanilo\Braintree\Messages\BraintreeClientTokenRequest;
 use Vanilo\Braintree\Messages\BraintreeCreateCustomerRequest;
 use Vanilo\Braintree\Messages\BraintreeGetCustomerRequest;
@@ -88,7 +88,7 @@ class BraintreePaymentGateway implements PaymentGateway
         ))->create($payment, $paymentMethodToken, $paymentMethodNonce, $customerId, $saveCard);
 
         if ($transactionResponse instanceof Error && !$transactionResponse->transaction) {
-            throw new CreatingTransactionFailed($transactionResponse->message);
+            throw TransactionCreationException::fromBraintreeError($transactionResponse);
         }
 
         $payment->update([
