@@ -2,10 +2,14 @@
     "name": "vanilo/braintree",
     "description": "Braintree Payment Gateway Support for Vanilo (Laravel)",
     "type": "library",
+    "keywords": ["laravel", "vanilo", "braintree", "payments"],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "license": "MIT",
     "authors": [
+        {
+            "name": "Hunor Kedves"
+        },
         {
             "name": "Attila Fulop"
         }

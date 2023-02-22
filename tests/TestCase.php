@@ -62,7 +62,7 @@ abstract class TestCase extends Orchestra
 
         $app['config']->set('concord.modules', [
             PaymentModule::class,
-            BraintreeModule::class
+            BraintreeModule::class,
         ]);
     }
 }
