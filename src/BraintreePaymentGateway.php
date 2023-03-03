@@ -12,6 +12,7 @@ use Vanilo\Braintree\Exceptions\TransactionCreationException;
 use Vanilo\Braintree\Messages\BraintreeClientTokenRequest;
 use Vanilo\Braintree\Messages\BraintreeCreateCustomerRequest;
 use Vanilo\Braintree\Messages\BraintreeGetCustomerRequest;
+use Vanilo\Braintree\Messages\BraintreeGetTransactionRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentResponse;
 use Vanilo\Braintree\Messages\BraintreeTransactionRequest;
@@ -116,6 +117,16 @@ class BraintreePaymentGateway implements PaymentGateway
             $this->publicKey,
             $this->privateKey
         ))->get($customerId);
+    }
+
+    public function getTransaction(string $transactionId): ?Transaction
+    {
+        return (new BraintreeGetTransactionRequest(
+            $this->isTest,
+            $this->merchantId,
+            $this->publicKey,
+            $this->privateKey
+        ))->get($transactionId);
     }
 
     public function isOffline(): bool
