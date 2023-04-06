@@ -27,6 +27,8 @@ class BraintreePaymentResponse implements PaymentResponse
 
     private string $message;
 
+    private ?string $subType;
+
     private bool $wasSuccessful = false;
 
     private ?string $transactionId;
@@ -38,7 +40,7 @@ class BraintreePaymentResponse implements PaymentResponse
         $this->transactionId = $transaction->id;
         $this->message = $transaction->processorResponseText;
         $this->amountPaid = (float) $transaction->amount;
-
+        $this->subType = $transaction->paymentInstrumentType;
         $this->resolveStatus();
 
         return $this;
@@ -72,6 +74,11 @@ class BraintreePaymentResponse implements PaymentResponse
     public function getStatus(): PaymentStatus
     {
         return $this->status;
+    }
+
+    public function getSubType(): ?string
+    {
+        return $this->subType;
     }
 
     public function getNativeStatus(): Enum
