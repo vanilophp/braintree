@@ -27,7 +27,7 @@ class BraintreePaymentResponse implements PaymentResponse
 
     private string $message;
 
-    private ?string $subType;
+    private ?string $subType = null;
 
     private bool $wasSuccessful = false;
 

@@ -17,7 +17,7 @@
     "require": {
         "php": "^8.0",
         "braintree/braintree_php": "^6.9",
-        "illuminate/contracts": "^9.2",
+        "illuminate/contracts": "^9.2|^10.0",
         "konekt/concord": "^1.10.2",
         "vanilo/payment": "^3.0",
         "vanilo/contracts": "^3.0"
@@ -29,7 +29,7 @@
     },
     "require-dev": {
         "ext-sqlite3": "*",
-        "orchestra/testbench": "^7.0",
+        "orchestra/testbench": "^7.0|^8.0",
         "phpunit/phpunit" : "^9.0"
     },
     "autoload-dev": {
