@@ -1,7 +1,7 @@
 # Vanilo Braintree Module Changelog
 
-## Unreleased
-##### 2023-XX-YY
+## 1.1.0
+##### 2023-04-06
 
 - Added the `getTransaction()` method to the gateway
 - Added processing the subtype (paymentInstrumentType) information to the payment response class
