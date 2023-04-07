@@ -130,7 +130,7 @@ class BraintreePaymentGateway implements PaymentGateway
         ))->get($transactionId);
     }
 
-    public function refundTransaction(string $transactionId, ?double $amount = null)
+    public function refundTransaction(string $transactionId, ?float $amount = null)
     {
         return (new BraintreeRefundTransactionRequest(
             $this->isTest,

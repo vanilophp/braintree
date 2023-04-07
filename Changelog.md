@@ -1,5 +1,10 @@
 # Vanilo Braintree Module Changelog
 
+## Unreleased
+##### 2023-XX-YY
+
+- Fixed double data type to float in the refund transaction method
+
 ## 1.2.0
 ##### 2023-04-07
 
