@@ -15,6 +15,7 @@ use Vanilo\Braintree\Messages\BraintreeGetCustomerRequest;
 use Vanilo\Braintree\Messages\BraintreeGetTransactionRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentResponse;
+use Vanilo\Braintree\Messages\BraintreeRefundTransactionRequest;
 use Vanilo\Braintree\Messages\BraintreeTransactionRequest;
 use Vanilo\Contracts\Address;
 use Vanilo\Payment\Contracts\Payment;
@@ -127,6 +128,16 @@ class BraintreePaymentGateway implements PaymentGateway
             $this->publicKey,
             $this->privateKey
         ))->get($transactionId);
+    }
+
+    public function refundTransaction(string $transactionId, ?double $amount = null)
+    {
+        return (new BraintreeRefundTransactionRequest(
+            $this->isTest,
+            $this->merchantId,
+            $this->publicKey,
+            $this->privateKey
+        ))->refund($transactionId, $amount);
     }
 
     public function isOffline(): bool
