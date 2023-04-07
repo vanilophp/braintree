@@ -1,5 +1,10 @@
 # Vanilo Braintree Module Changelog
 
+## 1.2.0
+##### 2023-04-07
+
+- Added the `refundTransaction()` method to the gateway
+
 ## 1.1.0
 ##### 2023-04-06
 
