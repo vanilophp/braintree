@@ -1,5 +1,10 @@
 # Vanilo Braintree Module Changelog
 
+## Unreleased
+##### 2023-XX-YY
+
+- Added the missing return type to the refund method
+
 ## 1.2.1
 ##### 2023-04-07
 
