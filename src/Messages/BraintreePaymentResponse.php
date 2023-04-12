@@ -8,7 +8,9 @@ use Braintree\Transaction;
 use Illuminate\Support\Arr;
 use Konekt\Enum\Enum;
 use Vanilo\Braintree\Concerns\HasBraintreeInteraction;
+use Vanilo\Braintree\Exceptions\UnsupportedOperationException;
 use Vanilo\Braintree\Models\BraintreeTransactionStatus;
+use Vanilo\Braintree\Models\TransactionType;
 use Vanilo\Payment\Contracts\PaymentResponse;
 use Vanilo\Payment\Contracts\PaymentStatus;
 use Vanilo\Payment\Models\PaymentStatusProxy;
@@ -19,9 +21,11 @@ class BraintreePaymentResponse implements PaymentResponse
 
     private string $paymentId;
 
-    private ?float $amountPaid;
+    private ?float $amount;
 
     private BraintreeTransactionStatus $nativeStatus;
+
+    private TransactionType $transactionType;
 
     private ?PaymentStatus $status = null;
 
@@ -36,10 +40,11 @@ class BraintreePaymentResponse implements PaymentResponse
     public function process(Transaction $transaction): self
     {
         $this->nativeStatus = BraintreeTransactionStatus::create($transaction->status);
-        $this->paymentId = Arr::get($transaction->customFields, 'payment_id');
+        $this->paymentId = $this->resolvePaymentId($transaction);
         $this->transactionId = $transaction->id;
         $this->message = $transaction->processorResponseText;
-        $this->amountPaid = (float) $transaction->amount;
+        $this->transactionType = TransactionType::create($transaction->type);
+        $this->amount = is_null($transaction->amount) ? null : floatval($transaction->amount);
         $this->subType = $transaction->paymentInstrumentType;
         $this->resolveStatus();
 
@@ -63,7 +68,7 @@ class BraintreePaymentResponse implements PaymentResponse
 
     public function getAmountPaid(): ?float
     {
-        return $this->amountPaid;
+        return $this->transactionType->signum() * $this->amount;
     }
 
     public function getPaymentId(): string
@@ -97,6 +102,19 @@ class BraintreePaymentResponse implements PaymentResponse
             'braintree_id' => $this->getTransactionId(),
             'message' => $this->getMessage(),
         ];
+    }
+
+    private function resolvePaymentId(Transaction $transaction): string
+    {
+        if (null !== $paymentId = Arr::get($transaction->customFields, 'payment_id')) {
+            return $paymentId;
+        } elseif (null !== $transaction->refundedTransactionId) {
+            return $this->resolvePaymentId(
+                $this->gateway->transaction()->find($transaction->refundedTransactionId)
+            );
+        }
+
+        throw new UnsupportedOperationException($transaction->__toString());
     }
 
     private function resolveStatus()

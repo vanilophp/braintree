@@ -4,6 +4,8 @@
 ##### 2023-XX-YY
 
 - Fixed invalid return types in the refund method
+- Fixed exception on credit operation types
+- Fixed the getAmount() calculation on credit operation types (are negative from now on)
 
 ## 1.2.3
 ##### 2023-04-12
