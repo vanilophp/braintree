@@ -153,8 +153,6 @@ class BraintreePaymentGateway implements PaymentGateway
         }
 
         return $result->transaction;
-
-
     }
 
     public function isOffline(): bool
