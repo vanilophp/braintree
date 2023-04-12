@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Vanilo\Braintree\Messages;
 
 use Braintree\Exception\NotFound;
-use Braintree\Transaction;
+use Braintree\Result\Error;
+use Braintree\Result\Successful;
 use Vanilo\Braintree\Concerns\HasBraintreeInteraction;
 
 class BraintreeRefundTransactionRequest
 {
     use HasBraintreeInteraction;
 
-    public function refund(string $transactionId, ?float $amount = null): ?Transaction
+    /**
+     * @throws NotFound
+     */
+    public function refund(string $transactionId, ?float $amount = null): Error|Successful
     {
-        try {
-            return $this->gateway->transaction()->refund($transactionId, $amount);
-        } catch (NotFound $e) {
-            return null;
-        }
+        return $this->gateway->transaction()->refund($transactionId, $amount);
     }
 }

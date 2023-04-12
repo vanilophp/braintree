@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Vanilo\Braintree;
 
 use Braintree\Customer;
+use Braintree\Exception\NotFound;
 use Braintree\Result\Error;
 use Braintree\Transaction;
 use Illuminate\Http\Request;
+use Vanilo\Braintree\Exceptions\RefundFailedException;
 use Vanilo\Braintree\Exceptions\TransactionCreationException;
 use Vanilo\Braintree\Messages\BraintreeClientTokenRequest;
 use Vanilo\Braintree\Messages\BraintreeCreateCustomerRequest;
@@ -130,14 +132,29 @@ class BraintreePaymentGateway implements PaymentGateway
         ))->get($transactionId);
     }
 
+    /**
+     * @throws RefundFailedException
+     */
     public function refundTransaction(string $transactionId, ?float $amount = null): ?Transaction
     {
-        return (new BraintreeRefundTransactionRequest(
-            $this->isTest,
-            $this->merchantId,
-            $this->publicKey,
-            $this->privateKey
-        ))->refund($transactionId, $amount);
+        try {
+            $result = (new BraintreeRefundTransactionRequest(
+                $this->isTest,
+                $this->merchantId,
+                $this->publicKey,
+                $this->privateKey
+            ))->refund($transactionId, $amount);
+        } catch (NotFound $exception) {
+            throw RefundFailedException::fromException($exception);
+        }
+
+        if ($result instanceof Error) {
+            throw RefundFailedException::fromBraintreeError($result);
+        }
+
+        return $result->transaction;
+
+
     }
 
     public function isOffline(): bool
