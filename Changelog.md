@@ -1,7 +1,7 @@
 # Vanilo Braintree Module Changelog
 
-## Unreleased
-##### 2023-XX-YY
+## 1.2.4
+##### 2023-04-13
 
 - Fixed invalid return types in the refund method
 - Fixed exception on credit operation types
