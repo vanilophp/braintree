@@ -12,7 +12,7 @@ class BraintreeRefundTransactionRequest
 {
     use HasBraintreeInteraction;
 
-    public function refund(string $transactionId, ?double $amount = null): ?Transaction
+    public function refund(string $transactionId, ?float $amount = null): ?Transaction
     {
         try {
             return $this->gateway->transaction()->refund($transactionId, $amount);
