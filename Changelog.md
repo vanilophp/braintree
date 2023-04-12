@@ -1,5 +1,10 @@
 # Vanilo Braintree Module Changelog
 
+## Unreleased
+##### 2023-XX-YY
+
+- Added the proper mapping of refund transactions to payment statuses
+
 ## 1.2.4
 ##### 2023-04-13
 

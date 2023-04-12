@@ -37,6 +37,9 @@ class BraintreePaymentResponse implements PaymentResponse
 
     private ?string $transactionId;
 
+    /** @var null|array{id: string, amount: float} */
+    private ?array $refundedTransaction = null;
+
     public function process(Transaction $transaction): self
     {
         $this->nativeStatus = BraintreeTransactionStatus::create($transaction->status);
@@ -109,9 +112,13 @@ class BraintreePaymentResponse implements PaymentResponse
         if (null !== $paymentId = Arr::get($transaction->customFields, 'payment_id')) {
             return $paymentId;
         } elseif (null !== $transaction->refundedTransactionId) {
-            return $this->resolvePaymentId(
-                $this->gateway->transaction()->find($transaction->refundedTransactionId)
-            );
+            $refundedTransaction = $this->gateway->transaction()->find($transaction->refundedTransactionId);
+            $this->refundedTransaction = [
+                'id' => $refundedTransaction->id,
+                'amount' => $refundedTransaction->amount,
+            ];
+
+            return $this->resolvePaymentId($refundedTransaction);
         }
 
         throw new UnsupportedOperationException($transaction->__toString());
@@ -128,7 +135,19 @@ class BraintreePaymentResponse implements PaymentResponse
             case BraintreeTransactionStatus::SUBMITTED_FOR_SETTLEMENT:
             case BraintreeTransactionStatus::SETTLING:
             case BraintreeTransactionStatus::SETTLEMENT_PENDING:
-                $this->status = PaymentStatusProxy::AUTHORIZED();
+                if ($this->transactionType->is_sale) {
+                    $this->status = PaymentStatusProxy::AUTHORIZED();
+                } else { // is a credit transaction
+                    if (null !== $this->refundedTransaction) {
+                        if ($this->refundedTransaction['amount'] > $this->amount) {
+                            $this->status = PaymentStatusProxy::PARTIALLY_REFUNDED();
+                        } else {
+                            $this->status = PaymentStatusProxy::REFUNDED();
+                        }
+                    }
+                    // This is a guess:
+                    $this->status = PaymentStatusProxy::PARTIALLY_REFUNDED();
+                }
                 $this->wasSuccessful = true;
                 break;
             case BraintreeTransactionStatus::AUTHORIZATION_EXPIRED:
