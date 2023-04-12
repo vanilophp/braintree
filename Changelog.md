@@ -1,7 +1,7 @@
 # Vanilo Braintree Module Changelog
 
-## Unreleased
-##### 2023-XX-YY
+## 1.2.3
+##### 2023-04-12
 
 - Fixed errors caused by `double` parameter in refund method (converted to float)
 
