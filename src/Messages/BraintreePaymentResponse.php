@@ -144,9 +144,9 @@ class BraintreePaymentResponse implements PaymentResponse
                         } else {
                             $this->status = PaymentStatusProxy::REFUNDED();
                         }
+                    } else { // This is a guess:
+                        $this->status = PaymentStatusProxy::PARTIALLY_REFUNDED();
                     }
-                    // This is a guess:
-                    $this->status = PaymentStatusProxy::PARTIALLY_REFUNDED();
                 }
                 $this->wasSuccessful = true;
                 break;
