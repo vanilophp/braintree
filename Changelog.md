@@ -1,7 +1,7 @@
 # Vanilo Braintree Module Changelog
 
-## Unreleased
-##### 2023-XX-YY
+## 1.4.0
+##### 2023-04-14
 
 - Added the `was_successful` key to the response toArray method that deprecates the `wasSuccessfull` (typo/camelCase instead of snake_case) entry
 
