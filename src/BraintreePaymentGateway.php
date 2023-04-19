@@ -82,14 +82,14 @@ class BraintreePaymentGateway implements PaymentGateway
         ))->process($request);
     }
 
-    public function createTransaction(Payment $payment, ?string $paymentMethodToken, ?string $paymentMethodNonce, ?string $customerId, bool $saveCard = false): Transaction
+    public function createTransaction(Payment $payment, Address $billingAddress, ?string $paymentMethodToken, ?string $paymentMethodNonce, ?string $customerId, bool $saveCard = false): Transaction
     {
         $transactionResponse = (new BraintreeTransactionRequest(
             $this->isTest,
             $this->merchantId,
             $this->publicKey,
             $this->privateKey
-        ))->create($payment, $paymentMethodToken, $paymentMethodNonce, $customerId, $saveCard);
+        ))->create($payment, $billingAddress, $paymentMethodToken, $paymentMethodNonce, $customerId, $saveCard);
 
         if ($transactionResponse instanceof Error && !$transactionResponse->transaction) {
             throw TransactionCreationException::fromBraintreeError($transactionResponse);
