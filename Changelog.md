@@ -1,5 +1,11 @@
 # Vanilo Braintree Module Changelog
 
+## 1.5.0
+##### 2023-04-19
+
+- Added the `deletePaymentMethod()` method to the gateway
+- Added an optional billing address parameter to the Gateway's `createTransaction()` method (gets forwarded to Braintree)
+
 ## 1.4.0
 ##### 2023-04-14
 
