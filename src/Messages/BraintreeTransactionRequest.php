@@ -16,7 +16,7 @@ class BraintreeTransactionRequest
 {
     use HasBraintreeInteraction;
 
-    public function create(Payment $payment, Address $billingAddress, ?string $paymentMethodToken, ?string $paymentMethodNonce, ?string $customerId, bool $saveCard = false): Successful|Error
+    public function create(Payment $payment, ?string $paymentMethodToken, ?string $paymentMethodNonce, ?string $customerId, bool $saveCard = false, Address $billingAddress = null): Successful|Error
     {
         $request = [
             'orderId' => $payment->getPayable()->getPayableId(),
@@ -30,7 +30,7 @@ class BraintreeTransactionRequest
             ],
         ];
 
-        if ($saveCard) {
+        if ($saveCard && $billingAddress) {
             $request = Arr::add($request, 'billing', [
                 'firstName' => Str::before($billingAddress->getName(), ' '),
                 'lastName' => Str::after($billingAddress->getName(), ' '),
