@@ -7,6 +7,7 @@ namespace Vanilo\Braintree;
 use Braintree\Customer;
 use Braintree\Exception\NotFound;
 use Braintree\Result\Error;
+use Braintree\Result\Successful;
 use Braintree\Transaction;
 use Illuminate\Http\Request;
 use Vanilo\Braintree\Exceptions\RefundFailedException;
@@ -15,6 +16,7 @@ use Vanilo\Braintree\Messages\BraintreeClientTokenRequest;
 use Vanilo\Braintree\Messages\BraintreeCreateCustomerRequest;
 use Vanilo\Braintree\Messages\BraintreeGetCustomerRequest;
 use Vanilo\Braintree\Messages\BraintreeGetTransactionRequest;
+use Vanilo\Braintree\Messages\BraintreePaymentMethodDeleteRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentRequest;
 use Vanilo\Braintree\Messages\BraintreePaymentResponse;
 use Vanilo\Braintree\Messages\BraintreeRefundTransactionRequest;
@@ -153,6 +155,16 @@ class BraintreePaymentGateway implements PaymentGateway
         }
 
         return $result->transaction;
+    }
+
+    public function deletePaymentMethod(string $token): Successful|Error
+    {
+        return (new BraintreePaymentMethodDeleteRequest(
+            $this->isTest,
+            $this->merchantId,
+            $this->publicKey,
+            $this->privateKey
+        ))->delete($token);
     }
 
     public function isOffline(): bool
