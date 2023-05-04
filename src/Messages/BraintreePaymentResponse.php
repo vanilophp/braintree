@@ -160,16 +160,13 @@ class BraintreePaymentResponse implements PaymentResponse
             case BraintreeTransactionStatus::FAILED:
             case BraintreeTransactionStatus::GATEWAY_REJECTED:
             case BraintreeTransactionStatus::PROCESSOR_DECLINED:
+            case BraintreeTransactionStatus::VOIDED:
                 $this->status = PaymentStatusProxy::DECLINED();
                 $this->wasSuccessful = false;
                 break;
             case BraintreeTransactionStatus::SETTLED:
                 $this->status = PaymentStatusProxy::PAID();
                 $this->wasSuccessful = true;
-                break;
-            case BraintreeTransactionStatus::VOIDED:
-                $this->status = PaymentStatusProxy::DECLINED();
-                $this->wasSuccessful = false;
                 break;
             default:
                 $this->status = PaymentStatusProxy::DECLINED();
