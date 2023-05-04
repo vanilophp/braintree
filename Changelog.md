@@ -1,5 +1,10 @@
 # Vanilo Braintree Module Changelog
 
+## Unreleased
+##### 2023-XX-YY
+
+- Fixed the voided status mapped as successful bug
+
 ## 1.5.0
 ##### 2023-04-19
 

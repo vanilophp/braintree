@@ -169,7 +169,7 @@ class BraintreePaymentResponse implements PaymentResponse
                 break;
             case BraintreeTransactionStatus::VOIDED:
                 $this->status = PaymentStatusProxy::DECLINED();
-                $this->wasSuccessful = true;
+                $this->wasSuccessful = false;
                 break;
             default:
                 $this->status = PaymentStatusProxy::DECLINED();
