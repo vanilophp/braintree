@@ -16,12 +16,14 @@ class BraintreePaymentRequest implements PaymentRequest
 
     private string $submitUrl;
 
+    private ?string $token = null;
+
     public function getHtmlSnippet(array $options = []): ?string
     {
         return View::make(
             $this->view,
             [
-                'clientToken' => $this->gateway->clientToken()->generate(),
+                'clientToken' => $this->getClientToken(),
                 'url' => $this->submitUrl,
             ]
         )->render();
@@ -48,5 +50,14 @@ class BraintreePaymentRequest implements PaymentRequest
         $this->submitUrl = $url;
 
         return $this;
+    }
+
+    public function getClientToken(): string
+    {
+        if (null === $this->token) {
+            $this->token = $this->gateway->clientToken()->generate();
+        }
+
+        return $this->token;
     }
 }
