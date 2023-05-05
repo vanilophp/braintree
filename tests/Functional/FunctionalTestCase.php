@@ -23,7 +23,6 @@ class FunctionalTestCase extends TestCase
 {
     private ?PaymentMethod $paymentMethod = null;
 
-
     protected function gateway(): BraintreePaymentGateway
     {
         return PaymentGateways::make(BraintreePaymentGateway::DEFAULT_ID);
