@@ -1,5 +1,10 @@
 # Vanilo Braintree Module Changelog
 
+## Unreleased
+##### 2023-XX-YY
+
+- Changed the Braintree `VOIDED` status to be mapped as `CANCELLED` instead of `DECLINED`
+
 ## 1.5.1
 ##### 2023-05-04
 
