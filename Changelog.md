@@ -4,6 +4,7 @@
 ##### 2023-XX-YY
 
 - Changed the Braintree `VOIDED` status to be mapped as `CANCELLED` instead of `DECLINED`
+- Added PHP 8.3 support
 
 ## 1.5.1
 ##### 2023-05-04
