@@ -1,7 +1,7 @@
 # Vanilo Braintree Module Changelog
 
-## Unreleased
-##### 2023-XX-YY
+## 1.6.0
+##### 2023-12-18
 
 - Changed the Braintree `VOIDED` status to be mapped as `CANCELLED` instead of `DECLINED`
 - Added PHP 8.3 support
