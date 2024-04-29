@@ -1,7 +1,7 @@
 # Vanilo Braintree Module Changelog
 
-## Unreleased
-##### 2024-XX-YY
+## 2.0.0
+##### 2024-04-29
 
 - Added Vanilo 4 support
 - Added Laravel 11 support
