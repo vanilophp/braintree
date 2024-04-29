@@ -26,10 +26,13 @@ use Vanilo\Payment\Contracts\Payment;
 use Vanilo\Payment\Contracts\PaymentGateway;
 use Vanilo\Payment\Contracts\PaymentRequest;
 use Vanilo\Payment\Contracts\PaymentResponse;
+use Vanilo\Payment\Contracts\TransactionHandler;
 
 class BraintreePaymentGateway implements PaymentGateway
 {
     public const DEFAULT_ID = 'braintree';
+
+    private static ?string $svg = null;
 
     public function __construct(
         private bool $isTest,
@@ -82,6 +85,16 @@ class BraintreePaymentGateway implements PaymentGateway
             $this->publicKey,
             $this->privateKey
         ))->process($request);
+    }
+
+    public static function svgIcon(): string
+    {
+        return self::$svg ??= file_get_contents(__DIR__ . '/resources/logo.svg');
+    }
+
+    public function transactionHandler(): ?TransactionHandler
+    {
+        return null;
     }
 
     public function createTransaction(Payment $payment, ?string $paymentMethodToken, ?string $paymentMethodNonce, ?string $customerId, bool $saveCard = false, ?Address $billingAddress = null): Transaction

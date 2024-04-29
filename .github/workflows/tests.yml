@@ -12,12 +12,9 @@ jobs:
     timeout-minutes: 10
     strategy:
       matrix:
-        php: ['8.0', '8.1', '8.2', '8.3']
-        laravel: ['9.x', '10.x']
+        php: ['8.2', '8.3']
+        laravel: ['10.x', '11.x']
         dependencies: ['highest', 'lowest']
-        exclude:
-          - php: '8.0'
-            laravel: '10.x'
     name: PHP ${{ matrix.php }} Laravel ${{ matrix.laravel }} (${{ matrix.dependencies }})
     steps:
       - name: Checkout
