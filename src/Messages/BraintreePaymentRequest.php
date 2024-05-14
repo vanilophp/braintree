@@ -38,6 +38,11 @@ class BraintreePaymentRequest implements PaymentRequest
         return true;
     }
 
+    public function getRemoteId(): ?string
+    {
+        return null;
+    }
+
     public function setView(string $view): self
     {
         $this->view = $view;

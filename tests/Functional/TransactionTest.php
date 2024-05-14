@@ -29,7 +29,7 @@ class TransactionTest extends FunctionalTestCase
         $payment = PaymentFactory::createFromPayable($order, $this->paymentMethod());
         /** @var BraintreePaymentRequest $request */
         $request = $this->gateway()->createPaymentRequest($payment);
-        $transaction = $this->gateway()->createTransaction($payment, null, $request->getClientToken(), null);
+        $transaction = $this->gateway()->createTransaction($payment, $request->getClientToken(), null, null);
 
         $this->assertInstanceOf(PaymentRequest::class, $request);
         $this->assertInstanceOf(Transaction::class, $transaction);

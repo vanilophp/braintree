@@ -1,5 +1,10 @@
 # Vanilo Braintree Module Changelog
 
+## Unreleased
+##### 2024-XX-YY
+
+- Fixed the missing remote id getter on the payment request class
+
 ## 2.0.0
 ##### 2024-04-29
 
