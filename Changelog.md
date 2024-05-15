@@ -1,5 +1,10 @@
 # Vanilo Braintree Module Changelog
 
+## 2.0.2
+##### 2024-05-15
+
+- Fixed the missing `getTransactionAmount()` method in the payment response class in [#5](https://github.com/vanilophp/braintree/pull/5) thanks [xujiongze](https://github.com/xujiongze)
+
 ## 2.0.1
 ##### 2024-05-14
 
