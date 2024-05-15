@@ -1,5 +1,10 @@
 # Vanilo Braintree Module Changelog
 
+## 2.0.3
+##### 2024-05-15
+
+- Fixed the invalid `getTransactionAmount()` type definition in [#6](https://github.com/vanilophp/braintree/pull/6) thanks [xujiongze](https://github.com/xujiongze)
+
 ## 2.0.2
 ##### 2024-05-15
 
