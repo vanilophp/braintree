@@ -74,7 +74,7 @@ class BraintreePaymentResponse implements PaymentResponse
         return $this->transactionType->signum() * $this->amount;
     }
 
-    public function getTransactionAmount(): ?float
+    public function getTransactionAmount(): float
     {
         return $this->transactionType->signum() * $this->amount;
     }
