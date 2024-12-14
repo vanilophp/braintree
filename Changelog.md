@@ -1,5 +1,10 @@
 # Vanilo Braintree Module Changelog
 
+## Unreleased
+##### 2024-XX-YY
+
+- Added PHP 8.4 support
+
 ## 2.0.3
 ##### 2024-05-15
 
