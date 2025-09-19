@@ -1,5 +1,12 @@
 # Vanilo Braintree Module Changelog
 
+## Unreleased
+#### 2025-XX-YY
+
+- Upgrade to Vanilo 5
+- Dropped PHP 8.2 support
+- Added Laravel 12 support
+
 ## 2.0.4
 ##### 2024-12-14
 

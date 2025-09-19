@@ -4,5 +4,5 @@ declare(strict_types=1);
 
 return [
     'name' => 'Braintree Payments for Vanilo',
-    'version' => '2.0.4',
+    'version' => '3.0-dev',
 ];
