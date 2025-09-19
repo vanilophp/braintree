@@ -1,7 +1,7 @@
 # Vanilo Braintree Module Changelog
 
-## Unreleased
-#### 2025-XX-YY
+## 3.0.0
+#### 2025-09-19
 
 - Upgrade to Vanilo 5
 - Dropped PHP 8.2 support
