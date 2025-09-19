@@ -28,7 +28,7 @@ jobs:
       - name: Lock Laravel Version
         run: composer require "laravel/framework:${{ matrix.laravel }}" --no-update --dev -v
       - name: Install dependencies
-        uses: "ramsey/composer-install@v1"
+        uses: "ramsey/composer-install@v3"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
           composer-options: "--prefer-dist --no-cache"
