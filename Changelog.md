@@ -1,7 +1,7 @@
 # Vanilo Braintree Module Changelog
 
-### Unreleased
-#### 2026-XX-YY
+### 4.0.0
+#### 2026-09-25
 
 - Upgrade to Vanilo 6
 - Added Laravel 13 support
