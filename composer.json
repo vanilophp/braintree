@@ -15,12 +15,12 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "braintree/braintree_php": "^6.11.1",
-        "illuminate/contracts": "^10.48|^11.0|^12.0",
-        "konekt/concord": "^1.13",
-        "vanilo/payment": "^5.0",
-        "vanilo/contracts": "^5.0"
+        "illuminate/contracts": "^12.61.1|^13.12",
+        "konekt/concord": "^1.18",
+        "vanilo/payment": "^6.0",
+        "vanilo/contracts": "^6.0"
     },
     "autoload": {
         "psr-4": {
@@ -29,7 +29,7 @@
     },
     "require-dev": {
         "ext-sqlite3": "*",
-        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "orchestra/testbench": "^10.0|^11.0",
         "phpunit/phpunit" : "^10.0|^11.0"
     },
     "autoload-dev": {
@@ -42,7 +42,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0.x-dev"
+            "dev-master": "4.0.x-dev"
         }
     }
 }
